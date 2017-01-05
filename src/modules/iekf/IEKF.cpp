@@ -573,8 +573,8 @@ void IEKF::correctGps(const vehicle_gps_position_s *msg)
 	y(Y_gps::vel_E) = msg->vel_e_m_s;
 	y(Y_gps::vel_D) = msg->vel_d_m_s;
 
-	ROS_INFO("gps vx: %10.4f , iekf vx: %10.4f",
-			double(msg->vel_n_m_s), double(_x(X::vel_N)));
+	//ROS_INFO("gps vx: %10.4f , iekf vx: %10.4f",
+			//double(msg->vel_n_m_s), double(_x(X::vel_N)));
 
 	Vector<float, Y_gps::n> yh;
 	yh(Y_gps::pos_N) = _x(X::pos_N);
