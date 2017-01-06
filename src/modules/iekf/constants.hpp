@@ -205,3 +205,9 @@ static const float BETA_TABLE[] = {
 	38.4549693067,
 	39.836592699,
 };
+
+
+// noise model
+static const float gyro_sigma_rw = 3.52e-4; // rad / sqrt(s)
+static const float gyro_sigma_rrw = 4.73e-5; // rad/s / sqrt(s)
+static const float gyro_correlation_time = 1841; // s

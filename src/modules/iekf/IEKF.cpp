@@ -350,39 +350,38 @@ void IEKF::correctAccel(const sensor_combined_s *msg)
 	kalmanCorrectCond(_sensorAccel, _P, H, R, r, dxe, dP);
 	Vector<float, X::n> x = applyErrorCorrection(dxe);
 
-	if (_sensorAccel.shouldCorrect())
-	{
+	if (_sensorAccel.shouldCorrect()) {
 		setX(x);
 		setP(_P + dP);
 	}
 
 	//Quatf q_nb2(x(X::q_nb_0), x(X::q_nb_1),
-			//x(X::q_nb_2), x(X::q_nb_3));
+	//x(X::q_nb_2), x(X::q_nb_3));
 	//Vector3f r2 = q_nb2.conjugate(y_b / x(X::accel_scale)) - _g_n;
 
 
 	//if (!_sensorAccel.shouldCorrect() || r2.norm() - r.norm() > 1e-2f) {
-		//ROS_INFO("accel non-linear correction used");
-		//Vector3f rot(dxe(Xe::rot_N), dxe(Xe::rot_E), dxe(Xe::rot_D));
-		//float angle = rot.norm();
-		//float angle_max = 0.1f * acosf(y_g_n.dot(_g_n)) / y_g_n.norm() / _g_n.norm();
+	//ROS_INFO("accel non-linear correction used");
+	//Vector3f rot(dxe(Xe::rot_N), dxe(Xe::rot_E), dxe(Xe::rot_D));
+	//float angle = rot.norm();
+	//float angle_max = 0.1f * acosf(y_g_n.dot(_g_n)) / y_g_n.norm() / _g_n.norm();
 
-		//if (angle > angle_max) {
-			//angle = angle_max;
-		//}
+	//if (angle > angle_max) {
+	//angle = angle_max;
+	//}
 
-		//Vector3f axis = y_g_n.cross(_g_n).unit();
-		//dxe.setZero();
-		//dxe(Xe::rot_N) = axis(0) * angle;
-		//dxe(Xe::rot_E) = axis(1) * angle;
-		//dxe(Xe::rot_D) = axis(2) * angle;
-		//x = applyErrorCorrection(dxe);
-		//setX(x);
-		//// don't update P, linearization is poor
+	//Vector3f axis = y_g_n.cross(_g_n).unit();
+	//dxe.setZero();
+	//dxe(Xe::rot_N) = axis(0) * angle;
+	//dxe(Xe::rot_E) = axis(1) * angle;
+	//dxe(Xe::rot_D) = axis(2) * angle;
+	//x = applyErrorCorrection(dxe);
+	//setX(x);
+	//// don't update P, linearization is poor
 
 	//} else {
-		//setX(x);
-		//setP(_P + dP);
+	//setX(x);
+	//setP(_P + dP);
 	//}
 }
 
@@ -436,38 +435,37 @@ void IEKF::correctMag(const sensor_combined_s *msg)
 	kalmanCorrectCond(_sensorMag, _P, H, R, r, dxe, dP);
 	Vector<float, X::n> x = applyErrorCorrection(dxe);
 
-	if (_sensorMag.shouldCorrect())
-	{
+	if (_sensorMag.shouldCorrect()) {
 		setX(x);
 		setP(_P + dP);
 	}
 
 	//Vector3f y2 = Quatf(x(X::q_nb_0), x(X::q_nb_1),
-				//x(X::q_nb_2), x(X::q_nb_3)).conjugate(y_b);
+	//x(X::q_nb_2), x(X::q_nb_3)).conjugate(y_b);
 	//Vector2f r2(y2(0) - yh(0), y2(1) - yh(1));
 
 	//if (!_sensorMag.shouldCorrect() || r2.norm() - r.norm() > 1e-2f) {
-		//ROS_INFO("mag non-linear correction used");
-		//Vector3f rot(dxe(Xe::rot_N), dxe(Xe::rot_E), dxe(Xe::rot_D));
-		//Vector3f y_xy = Vector3f(y(0), y(1), 0);
-		//Vector3f yh_xy = Vector3f(yh(0), yh(1), 0);
-		//float angle = rot.norm();
-		//float angle_max = 0.1f * acosf(y_xy.dot(yh_xy)) / y_xy.norm() / yh_xy.norm();
+	//ROS_INFO("mag non-linear correction used");
+	//Vector3f rot(dxe(Xe::rot_N), dxe(Xe::rot_E), dxe(Xe::rot_D));
+	//Vector3f y_xy = Vector3f(y(0), y(1), 0);
+	//Vector3f yh_xy = Vector3f(yh(0), yh(1), 0);
+	//float angle = rot.norm();
+	//float angle_max = 0.1f * acosf(y_xy.dot(yh_xy)) / y_xy.norm() / yh_xy.norm();
 
-		//if (angle > angle_max) {
-			//angle = angle_max;
-		//}
+	//if (angle > angle_max) {
+	//angle = angle_max;
+	//}
 
-		//Vector3f axis = y_xy.cross(yh_xy).unit();
-		//dxe.setZero();
-		//dxe(Xe::rot_D) = axis(2) * angle;
-		//x = applyErrorCorrection(dxe);
-		//setX(x);
-		//// don't update P, linearization is poor
+	//Vector3f axis = y_xy.cross(yh_xy).unit();
+	//dxe.setZero();
+	//dxe(Xe::rot_D) = axis(2) * angle;
+	//x = applyErrorCorrection(dxe);
+	//setX(x);
+	//// don't update P, linearization is poor
 
 	//} else {
-		//setX(x);
-		//setP(_P + dP);
+	//setX(x);
+	//setP(_P + dP);
 	//}
 }
 
@@ -574,7 +572,7 @@ void IEKF::correctGps(const vehicle_gps_position_s *msg)
 	y(Y_gps::vel_D) = msg->vel_d_m_s;
 
 	//ROS_INFO("gps vx: %10.4f , iekf vx: %10.4f",
-			//double(msg->vel_n_m_s), double(_x(X::vel_N)));
+	//double(msg->vel_n_m_s), double(_x(X::vel_N)));
 
 	Vector<float, Y_gps::n> yh;
 	yh(Y_gps::pos_N) = _x(X::pos_N);
@@ -957,15 +955,18 @@ void IEKF::predict(float dt)
 
 	// define process noise matrix
 	Matrix<float, Xe::n, Xe::n> Q;
+
+	float gyro_sigma_rrw_sq = gyro_sigma_rrw * gyro_sigma_rrw;
+
 	Q(Xe::rot_N, Xe::rot_N) = 0;
 	Q(Xe::rot_E, Xe::rot_E) = 0;
 	Q(Xe::rot_D, Xe::rot_D) = 0;
 	Q(Xe::vel_N, Xe::vel_N) = 1e-3;
 	Q(Xe::vel_E, Xe::vel_E) = 1e-3;
 	Q(Xe::vel_D, Xe::vel_D) = 1e-3;
-	Q(Xe::gyro_bias_N, Xe::gyro_bias_N) = 1e-10f;
-	Q(Xe::gyro_bias_E, Xe::gyro_bias_E) = 1e-10f;
-	Q(Xe::gyro_bias_D, Xe::gyro_bias_D) = 1e-10f;
+	Q(Xe::gyro_bias_N, Xe::gyro_bias_N) = gyro_sigma_rrw_sq;
+	Q(Xe::gyro_bias_E, Xe::gyro_bias_E) = gyro_sigma_rrw_sq;
+	Q(Xe::gyro_bias_D, Xe::gyro_bias_D) = gyro_sigma_rrw_sq;
 	Q(Xe::accel_scale, Xe::accel_scale) = 0;
 	Q(Xe::pos_N, Xe::pos_N) = 0;
 	Q(Xe::pos_E, Xe::pos_E) = 0;
@@ -1028,6 +1029,11 @@ void IEKF::predict(float dt)
 	// derivative of terrain alt is zero
 
 	// derivative of baro bias is zero
+
+	// derivative of gyro bias depends on correlation time
+	A(Xe::gyro_bias_N, Xe::gyro_bias_N) = -1.0f / gyro_correlation_time;
+	A(Xe::gyro_bias_E, Xe::gyro_bias_E) = -1.0f / gyro_correlation_time;
+	A(Xe::gyro_bias_D, Xe::gyro_bias_D) = -1.0f / gyro_correlation_time;
 
 	//ROS_INFO("A:");
 	//for (int i=0;i<Xe::n; i++) {
