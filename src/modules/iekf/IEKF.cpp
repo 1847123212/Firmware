@@ -751,7 +751,7 @@ void IEKF::correctFlow(const optical_flow_s *msg)
 	Vector<float, Y_flow::n> r = y - yh;
 
 	//ROS_INFO("flow: (%10g, %10g)", double(y(0)), double(y(1)));
-	ROS_INFO("flot dt: %10.4f", double(dt));
+	//ROS_INFO("float dt: %10.4f", double(dt));
 
 	// define R
 	Matrix<float, Y_flow::n, Y_flow::n> R;
@@ -956,17 +956,19 @@ void IEKF::predict(float dt)
 	// define process noise matrix
 	Matrix<float, Xe::n, Xe::n> Q;
 
-	float gyro_sigma_rrw_sq = gyro_sigma_rrw * gyro_sigma_rrw;
+	// calculate gyro bias covariance, note this is continuous
+	const float gyro_Q_rrw= gyro_sigma_rrw * gyro_sigma_rrw;
+	const float gyro_Q_rw= gyro_sigma_rw * gyro_sigma_rw;
 
-	Q(Xe::rot_N, Xe::rot_N) = 0;
-	Q(Xe::rot_E, Xe::rot_E) = 0;
-	Q(Xe::rot_D, Xe::rot_D) = 0;
+	Q(Xe::rot_N, Xe::rot_N) = gyro_Q_rw;
+	Q(Xe::rot_E, Xe::rot_E) = gyro_Q_rw;
+	Q(Xe::rot_D, Xe::rot_D) = gyro_Q_rw;
 	Q(Xe::vel_N, Xe::vel_N) = 1e-3;
 	Q(Xe::vel_E, Xe::vel_E) = 1e-3;
 	Q(Xe::vel_D, Xe::vel_D) = 1e-3;
-	Q(Xe::gyro_bias_N, Xe::gyro_bias_N) = gyro_sigma_rrw_sq;
-	Q(Xe::gyro_bias_E, Xe::gyro_bias_E) = gyro_sigma_rrw_sq;
-	Q(Xe::gyro_bias_D, Xe::gyro_bias_D) = gyro_sigma_rrw_sq;
+	Q(Xe::gyro_bias_N, Xe::gyro_bias_N) = gyro_Q_rrw;
+	Q(Xe::gyro_bias_E, Xe::gyro_bias_E) = gyro_Q_rrw;
+	Q(Xe::gyro_bias_D, Xe::gyro_bias_D) = gyro_Q_rrw;
 	Q(Xe::accel_scale, Xe::accel_scale) = 0;
 	Q(Xe::pos_N, Xe::pos_N) = 0;
 	Q(Xe::pos_E, Xe::pos_E) = 0;
