@@ -957,8 +957,8 @@ void IEKF::predict(float dt)
 	Matrix<float, Xe::n, Xe::n> Q;
 
 	// calculate gyro bias covariance, note this is continuous
-	const float gyro_Q_rrw= gyro_sigma_rrw * gyro_sigma_rrw;
-	const float gyro_Q_rw= gyro_sigma_rw * gyro_sigma_rw;
+	const float gyro_Q_rrw = gyro_sigma_rrw * gyro_sigma_rrw;
+	const float gyro_Q_rw = gyro_sigma_rw * gyro_sigma_rw;
 
 	Q(Xe::rot_N, Xe::rot_N) = gyro_Q_rw;
 	Q(Xe::rot_E, Xe::rot_E) = gyro_Q_rw;
