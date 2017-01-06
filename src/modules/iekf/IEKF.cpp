@@ -176,8 +176,8 @@ IEKF::IEKF() :
 
 	// magnetic field values for SITL
 	// TODO load from GPS or params
-	_magDeclDeg = 2.05;
-	_magInclDeg = -63.3;
+	_magDeclDeg = magDeclDeg;
+	_magInclDeg = magInclDeg;
 }
 
 Vector<float, X::n> IEKF::dynamics(float t, const Vector<float, X::n> &x, const Vector<float, U::n> &u)

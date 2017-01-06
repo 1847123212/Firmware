@@ -207,7 +207,10 @@ static const float BETA_TABLE[] = {
 };
 
 
-// noise model
+// these should all be rosparams eventually
 static const float gyro_sigma_rw = 3.52e-4; // rad / sqrt(s)
 static const float gyro_sigma_rrw = 4.73e-5; // rad/s / sqrt(s)
 static const float gyro_correlation_time = 1841; // s
+static const float magDeclDeg = 2.05;
+static const float magInclDeg = -63.3;
+
