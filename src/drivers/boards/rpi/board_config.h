@@ -1,6 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (c) 2014 PX4 Development Team. All rights reserved.
+ *   Copyright (c) 2017 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -31,37 +31,17 @@
  *
  ****************************************************************************/
 
+/**
+ * @file board_config.h
+ *
+ * RPI internal definitions
+ */
+
 #pragma once
 
-#include <stdint.h>
 
-__BEGIN_DECLS
-
-/* magic numbers from reference manual */
-enum MCU_REV {
-	MCU_REV_STM32F4_REV_A = 0x1000,
-	MCU_REV_STM32F4_REV_Z = 0x1001,
-	MCU_REV_STM32F4_REV_Y = 0x1003,
-	MCU_REV_STM32F4_REV_1 = 0x1007,
-	MCU_REV_STM32F4_REV_3 = 0x2001
-};
-
-
-/**
- * Reports the microcontroller unique id.
- *
- * This ID is guaranteed to be unique for every mcu.
- * @param uid_96_bit A uint32_t[3] array to copy the data to.
- */
-__EXPORT void mcu_unique_id(uint32_t *uid_96_bit);
-
-/**
- * Reports the microcontroller version of the main CPU.
- *
- * @param rev The silicon revision character
- * @param revstr The full chip name string
- * @return The silicon revision / version number as integer. -1 on error (rev and revstr will not be set)
- */
-__EXPORT int mcu_version(char *rev, char **revstr);
-
-__END_DECLS
+#define BOARD_NAME "RPI"
+#define BOARD_BATTERY1_V_DIV   (10.177939394f)
+#define BOARD_BATTERY1_A_PER_V (15.391030303f)
+#define BOARD_HAS_NO_RESET
+#define BOARD_HAS_NO_BOOTLOADER

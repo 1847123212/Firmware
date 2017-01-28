@@ -31,6 +31,7 @@
  *
  ****************************************************************************/
 
+#include <px4_config.h>
 #include "logger.h"
 #include "messages.h"
 
@@ -59,7 +60,6 @@
 #include <systemlib/mavlink_log.h>
 #include <replay/definitions.hpp>
 #include <version/version.h>
-#include <systemlib/mcu_version.h>
 
 #ifdef __PX4_DARWIN
 #include <sys/param.h>
@@ -383,9 +383,11 @@ Logger::Logger(LogWriter::Backend backend, size_t buffer_size, uint32_t log_inte
 	_log_until_shutdown(log_until_shutdown),
 	_log_name_timestamp(log_name_timestamp),
 	_writer(backend, buffer_size, queue_size),
-	_log_interval(log_interval)
+	_log_interval(log_interval),
+	_sdlog_mode(0)
 {
 	_log_utc_offset = param_find("SDLOG_UTC_OFFSET");
+	_sdlog_mode_handle = param_find("SDLOG_MODE");
 }
 
 Logger::~Logger()
@@ -565,6 +567,15 @@ void Logger::add_default_topics()
 	add_topic("vehicle_land_detected");
 }
 
+void Logger::add_calibration_topics()
+{
+	// Note: try to avoid setting the interval where possible, as it increases RAM usage
+
+	add_topic("sensor_gyro", 100);
+	add_topic("sensor_accel", 100);
+	add_topic("sensor_baro", 100);
+}
+
 int Logger::add_topics_from_file(const char *fname)
 {
 	FILE		*fp;
@@ -581,7 +592,6 @@ int Logger::add_topics_from_file(const char *fname)
 	}
 
 	/* call add_topic for each topic line in the file */
-	// format is TOPIC_NAME, [interval]
 	for (;;) {
 
 		/* get a line, bail on error/EOF */
@@ -596,14 +606,24 @@ int Logger::add_topics_from_file(const char *fname)
 			continue;
 		}
 
-		// default interval to zero
+		// read line with format: <topic_name>[, <interval>]
 		interval = 0;
-		int nfields = sscanf(line, "%s, %u", topic_name, &interval);
+		int nfields = sscanf(line, "%s %u", topic_name, &interval);
 
 		if (nfields > 0) {
+			int name_len = strlen(topic_name);
+
+			if (name_len > 0 && topic_name[name_len - 1] == ',') {
+				topic_name[name_len - 1] = '\0';
+			}
+
 			/* add topic with specified interval */
-			add_topic(topic_name, interval);
-			ntopics++;
+			if (add_topic(topic_name, interval) >= 0) {
+				ntopics++;
+
+			} else {
+				PX4_ERR("Failed to add topic %s", topic_name);
+			}
 		}
 	}
 
@@ -662,7 +682,18 @@ void Logger::run()
 		PX4_INFO("logging %d topics from logger_topics.txt", ntopics);
 
 	} else {
-		add_default_topics();
+
+		/* get the logging mode */
+		if (_sdlog_mode_handle != PARAM_INVALID) {
+			param_get(_sdlog_mode_handle, &_sdlog_mode);
+		}
+
+		if (_sdlog_mode == 3) {
+			add_calibration_topics();
+
+		} else {
+			add_default_topics();
+		}
 	}
 
 	int vehicle_command_sub = -1;
@@ -1391,10 +1422,10 @@ void Logger::write_version()
 	write_info("sys_toolchain", px4_toolchain_name());
 	write_info("sys_toolchain_ver", px4_toolchain_version());
 
-	char revision;
-	char *chip_name;
+	char revision = 'U';
+	const char *chip_name = nullptr;
 
-	if (mcu_version(&revision, &chip_name) >= 0) {
+	if (board_mcu_version(&revision, &chip_name, nullptr) >= 0) {
 		char mcu_ver[64];
 		snprintf(mcu_ver, sizeof(mcu_ver), "%s, rev. %c", chip_name, revision);
 		write_info("sys_mcu", mcu_ver);
@@ -1408,10 +1439,8 @@ void Logger::write_version()
 		param_get(write_uuid_param, &write_uuid);
 
 		if (write_uuid == 1) {
-			uint32_t uuid[3];
-			mcu_unique_id(uuid);
-			char uuid_string[sizeof(uint32_t) * 3 * 2 + 1];
-			snprintf(uuid_string, sizeof(uuid_string), "%08x%08x%08x", uuid[0], uuid[1], uuid[2]);
+			char uuid_string[PX4_CPU_UUID_WORD32_LEGACY_FORMAT_SIZE];
+			board_get_uuid_formated32(uuid_string, sizeof(uuid_string), "%08X", NULL, &px4_legacy_word32_order);
 			write_info("sys_uuid", uuid_string);
 		}
 	}

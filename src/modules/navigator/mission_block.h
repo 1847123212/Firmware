@@ -129,7 +129,7 @@ protected:
 	/**
 	 * Set follow_target item
 	 */
-	void set_follow_target_item(struct mission_item_s *item, float min_clearance, follow_target_s & target, float yaw);
+	void set_follow_target_item(struct mission_item_s *item, float min_clearance, follow_target_s &target, float yaw);
 
 	void issue_command(const struct mission_item_s *item);
 
@@ -151,6 +151,7 @@ protected:
 	control::BlockParamInt _param_vtol_wv_takeoff;
 	control::BlockParamInt _param_vtol_wv_loiter;
 	control::BlockParamInt _param_force_vtol;
+	control::BlockParamFloat _param_back_trans_dur;
 };
 
 #endif

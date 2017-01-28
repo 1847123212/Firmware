@@ -194,10 +194,10 @@ __BEGIN_DECLS
 #define ADC_BATTERY_CURRENT_CHANNEL     1
 #define ADC_BATTERY1_VOLTAGE_CHANNEL    2
 #define ADC_BATTERY1_CURRENT_CHANNEL    3
-#define ADC_5V_RAIL_SENSE               4 /* NOT FMUv5 test HW ONLY*/
+#define ADC_5V_RAIL_SENSE               4 /* NOT to FMUv5 spec on test HW ONLY - delete this on when running on FMUv5 spec-ed HW */
 #define ADC_RC_RSSI_CHANNEL             8
-#define ADC_INT_1                       10
-#define ADC_INT_2                       11
+#define ADC_SCALED_V5                   10
+#define ADC_SCALED_V3V3                 11
 #define ADC_INT_3                       12
 #define ADC_INT_4                       13
 #define ADC_INT_5                       14
@@ -381,14 +381,47 @@ __BEGIN_DECLS
 #define BOARD_HAS_PWM	DIRECT_PWM_OUTPUT_CHANNELS
 
 #define BOARD_FMU_GPIO_TAB { \
-		{GPIO_GPIO0_INPUT,       GPIO_GPIO0_OUTPUT,       0}, \
-		{GPIO_GPIO1_INPUT,       GPIO_GPIO1_OUTPUT,       0}, \
-		{GPIO_GPIO2_INPUT,       GPIO_GPIO2_OUTPUT,       0}, \
-		{GPIO_GPIO3_INPUT,       GPIO_GPIO3_OUTPUT,       0}, \
-		{GPIO_GPIO4_INPUT,       GPIO_GPIO4_OUTPUT,       0}, \
-		{GPIO_GPIO5_INPUT,       GPIO_GPIO5_OUTPUT,       0}, \
-		{0,                      GPIO_VDD_3V3_SENSORS_EN, 0}, \
-		{GPIO_VDD_BRICK_VALID,   0,                       0}, }
+		{GPIO_GPIO0_INPUT,       GPIO_GPIO0_OUTPUT,        0}, \
+		{GPIO_GPIO1_INPUT,       GPIO_GPIO1_OUTPUT,        0}, \
+		{GPIO_GPIO2_INPUT,       GPIO_GPIO2_OUTPUT,        0}, \
+		{GPIO_GPIO3_INPUT,       GPIO_GPIO3_OUTPUT,        0}, \
+		{GPIO_GPIO4_INPUT,       GPIO_GPIO4_OUTPUT,        0}, \
+		{GPIO_GPIO5_INPUT,       GPIO_GPIO5_OUTPUT,        0}, \
+		{GPIO_POWER_IN_A,        0,                        0}, \
+		{GPIO_POWER_IN_B,        0,                        0}, \
+		{GPIO_POWER_IN_C,        0,                        0}, \
+		{0,                      GPIO_VDD_3V3_SENSORS_EN,  0}, \
+		{GPIO_VDD_BRICK_VALID,   0,                        0}, \
+		{0,                      GPIO_SPEKTRUM_POWER_EN,   0}, \
+		{0,                      GPIO_PERIPH_5V_EN,        0}, \
+		{0,                      GPIO_VDD_5V_RC_EN,        0}, \
+		{0,                      GPIO_VDD_5V_WIFI_EN,      0}, \
+		{0,                      GPIO_VDD_3V3V_SD_CARD_EN, 0}, }
+
+/*
+ * GPIO numbers.
+ *
+ * There are no alternate functions on this board.
+ */
+#define GPIO_SERVO_1             (1<<0)   /**< servo 1 output */
+#define GPIO_SERVO_2             (1<<1)   /**< servo 2 output */
+#define GPIO_SERVO_3             (1<<2)   /**< servo 3 output */
+#define GPIO_SERVO_4             (1<<3)   /**< servo 4 output */
+#define GPIO_SERVO_5             (1<<4)   /**< servo 5 output */
+#define GPIO_SERVO_6             (1<<5)   /**< servo 6 output */
+
+#define GPIO_POWER_INPUT_A       (1<<6)   /**<PG1 GPIO_POWER_IN_A */
+#define GPIO_POWER_INPUT_B       (1<<7)   /**<PG2 GPIO_POWER_IN_B */
+#define GPIO_POWER_INPUT_C       (1<<8)   /**<PG3 GPIO_POWER_IN_C */
+
+#define GPIO_3V3_SENSORS_EN      (1<<9)   /**< PE3  - VDD_3V3_SENSORS_EN */
+#define GPIO_BRICK_VALID         (1<<10)  /**< PB10 - !VDD_BRICK_VALID */
+#define GPIO_SPEKTRUM_POWER      (1<<11)  /**< PE4  - GPIO_SPEKTRUM_POWER_EN */
+
+#define GPIO_PERIPH_5V_POWER_EN  (1<<12)  /**< PG4  - GPIO_PERIPH_5V_EN        */
+#define GPIO_RC_POWER_EN         (1<<13)  /**< PG5  - GPIO_VDD_5V_RC_EN        */
+#define GPIO_WIFI_POWER_EN       (1<<14)  /**< PG6  - GPIO_VDD_5V_WIFI_EN      */
+#define GPIO_SD_CARD_POWER_EN    (1<<15)  /**< PG7  - GPIO_VDD_3V3V_SD_CARD_EN */
 
 /* This board provides a DMA pool and APIs */
 
